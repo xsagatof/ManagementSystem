@@ -8,43 +8,50 @@ namespace ManagementSystem
 {
 	public abstract class Employee
 	{
-		public string Name;
+		public string name;
 
-		public int Id;
+		public int id;
 
-		public float Salary;
+		public float baseSalary;
 
 		public Employee(string name, int id, float salary)
 		{
-			Name = name;
-			Id = id;
-			Salary = salary;
+			this.name = name;
+			this.id = id;
+			baseSalary = salary;
 		}
 
 		public void setName(string name)
 		{
-			Name = name;
+			this.name = name;
 		}
 		public void setId(int id)
 		{
-			Id = id;
+			this.id = id;
 		}
-		public void setSalary(float salary)
+		public void setBaseSalary(float salary)
 		{
-			Salary = salary;
+			if (salary < 0)
+			{
+				throw new InvalidSalaryException("Negative salary, please enter positive one");
+			}
+			else
+			{
+				baseSalary = salary;
+			}
 		}
 
 		public string getName()
 		{
-			return Name;
+			return name;
 		}
 		public int getId()
 		{
-			return Id;
+			return id;
 		}
 		public float getSalary()
 		{
-			return Salary;
+			return baseSalary;
 		}
 
 		public abstract double calculateSalary();
