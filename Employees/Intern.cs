@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ManagementSystem
+namespace ManagementSystem.Employees
 {
-	internal class Intern
-	{
+    internal class Intern
+    {
 
-	}
+    }
 }
