@@ -19,7 +19,15 @@ namespace ManagementSystem.Employees
             this.name = name;
             this.id = id;
             baseSalary = salary;
-        }
+            if (salary < 0)
+            {
+	            throw new InvalidSalaryException("Negative salary, please enter positive one");
+            }
+            else
+            {
+	            baseSalary = salary;
+            }
+		}
 
         public void setName(string name)
         {

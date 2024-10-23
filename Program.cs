@@ -1,4 +1,5 @@
 ﻿using ManagementSystem.Employees;
+using System.Data.SqlClient;
 
 namespace ManagementSystem
 {
@@ -6,18 +7,53 @@ namespace ManagementSystem
 	{
 		static void Main(string[] args)
 		{
-			Employee Full1 = new FullTime("Ford", 2010, -90);
+			SqlConnection sqlConnection;
+			string connectionString =
+				@"Data Source=.;Initial Catalog=MyDb;Integrated Security=True";
+
 			try
 			{
-				Full1.setBaseSalary(800);
+				sqlConnection = new SqlConnection(connectionString);
+				sqlConnection.Open();
+				Console.WriteLine("Connection established successfully");
+
+				Person person = new Person();
+				Console.WriteLine("Enter name of new person: ");
+				person.name = Console.ReadLine();
+
+				Console.WriteLine("Enter age of new person: ");
+				person.age = Convert.ToInt16(Console.ReadLine());
+
+				string insertQuery = "INSERT INTO DETAILS(user_name,user_age) VALUES('" + person.name + "'," + person.age + ")";
+				SqlCommand insertCommand = new SqlCommand(insertQuery, sqlConnection);
+				insertCommand.ExecuteNonQuery();
+				Console.WriteLine("Data is successfully inserted into table!");
+
+				sqlConnection.Close();
 			}
-			catch(Exception ex)
+			catch (Exception e1)
 			{
-				Console.WriteLine(ex.Message);
+				Console.WriteLine(e1.Message);
 			}
 
-			Full1.displayEmployeeDetails();
-			Full1.calculateSalary();
+			//Employee Full1 = new FullTime("Ford", 2010, -90);
+			//Console.WriteLine("Management System");
+			//Console.WriteLine("1. ");
+
+
+			try
+			{
+				Employee Full2 = new FullTime("Ford", 2010, -90);
+				//Full1.setBaseSalary(800);
+				//Full2.displayEmployeeDetails();
+			}
+			catch(Exception e2)
+			{
+				Console.WriteLine(e2.Message);
+			}
+
+			//Full2.displayEmployeeDetails();
+			//Full1.calculateSalary();
 		}
 	}
 }
