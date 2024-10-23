@@ -36,24 +36,6 @@ namespace ManagementSystem
 				Console.WriteLine(e1.Message);
 			}
 
-			//Employee Full1 = new FullTime("Ford", 2010, -90);
-			//Console.WriteLine("Management System");
-			//Console.WriteLine("1. ");
-
-
-			try
-			{
-				Employee Full2 = new FullTime("Ford", 2010, -90);
-				//Full1.setBaseSalary(800);
-				//Full2.displayEmployeeDetails();
-			}
-			catch(Exception e2)
-			{
-				Console.WriteLine(e2.Message);
-			}
-
-			//Full2.displayEmployeeDetails();
-			//Full1.calculateSalary();
 		}
 	}
 }
