@@ -17,7 +17,9 @@ namespace ManagementSystem
 				sqlConnection.Open();
 				Console.WriteLine("Connection established successfully");
 
-				Person person = new Person();
+				//Create -> C
+
+				/*Person person = new Person();
 				Console.WriteLine("Enter name of new person: ");
 				person.name = Console.ReadLine();
 
@@ -28,7 +30,31 @@ namespace ManagementSystem
 				SqlCommand insertCommand = new SqlCommand(insertQuery, sqlConnection);
 				insertCommand.ExecuteNonQuery();
 				Console.WriteLine("Data is successfully inserted into table!");
+				*/
 
+				// Retrieve -> R
+				string displayQuery = "SELECT * FROM Details";
+				SqlCommand displayCommmand = new SqlCommand(displayQuery, sqlConnection);
+				SqlDataReader dataReader = displayCommmand.ExecuteReader();
+				while (dataReader.Read())
+				{
+					Console.WriteLine("ID: " + dataReader.GetValue(0).ToString());
+					Console.WriteLine("Name: " + dataReader.GetValue(1).ToString());
+					Console.WriteLine("Age: " + dataReader.GetValue(2).ToString());
+				}
+				dataReader.Close();
+
+				//Update -> U
+				int u_id;
+				int u_age;
+				Console.WriteLine("Enter the user ID that you would like to update");
+				u_id = int.Parse(Console.ReadLine());
+				Console.WriteLine("Enter the age of the user that you will update");
+				u_age = int.Parse(Console.ReadLine());
+				string updateQuery = "UPDATE Details SET user_age = " + u_age + "WHERE user_id = " + u_id + "";
+				SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection);
+				updateCommand.ExecuteNonQuery();
+				Console.WriteLine("Data updated successfully");
 				sqlConnection.Close();
 			}
 			catch (Exception e1)
