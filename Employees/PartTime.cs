@@ -9,16 +9,20 @@ namespace ManagementSystem.Employees
 {
     public class PartTime : Employee
     {
-        public PartTime(string name, int id, float salary) : base(name, id, salary)
+	    public int hourlyRate;
+	    public int hoursWorked;
+        public PartTime(string name, int id, float salary, int hourW, int hourR) : base(name, id, salary)
         {
             baseSalary = salary;
             this.name = name;
             this.id = id;
+            hourlyRate = hourR;
+            hoursWorked = hourW;
         }
 
         public override double calculateSalary()
         {
-            return baseSalary;
+            return baseSalary = hourlyRate * hoursWorked;
         }
 
         public override void displayEmployeeDetails()
