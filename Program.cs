@@ -67,7 +67,14 @@ namespace ManagementSystem
 
 						case 4:
 							//Delete -> D
-							
+							int d_id;
+							Console.WriteLine("Enter ID of the record that is to be deleted");
+							d_id = int.Parse(Console.ReadLine());
+							string deleteQuery = "DELETE FROM Details WHERE user_id = " + d_id;
+							SqlCommand deleteCommand = new SqlCommand(deleteQuery, sqlConnection);
+							deleteCommand.ExecuteNonQuery();
+							Console.WriteLine("Deleted  successfully");
+							sqlConnection.Close();
 							break;
 						default:
 							Console.WriteLine("Incorrect Input");
