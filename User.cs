@@ -9,8 +9,10 @@ namespace ManagementSystem
 {
 	public class User
 	{
+		public string id { get; set; }
 		public string name { get; set; }
-		public int id { get; set; }
+		public string role { get; set; }
+		public string salary { get; set; }
 		
 	}
 }
