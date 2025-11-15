@@ -9,8 +9,10 @@ namespace ManagementSystem.Models
 	public class User
 	{
 		public int Id { get; set; }
-		public string Name { get; set; }
-		public string Role { get; set; }
-		public double Salary { get; set; }
+		public string FullName { get; set; }
+		public string Password { get; set; }
+		public string Email { get; set; }
+		public UserRole Role { get; set; }
+		public DateTime CreatedAt { get; set; } = DateTime.Now;
 	}
 }
