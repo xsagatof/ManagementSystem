@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace ManagementSystem.Models
 {
-	public enum UserRole
+	public class Admin : User
 	{
-		Admin,
-		Teacher,
-		Student
+		public int EmptyForNow { get; set; }
+
 	}
 }
