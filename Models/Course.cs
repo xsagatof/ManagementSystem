@@ -10,9 +10,6 @@ namespace ManagementSystem.Models
 	{
 		public int CourseID { get; set; }
 		public string Name { get; set; }
-		public string Description { get; set; }
 		public double Credits { get; set; }
-		public bool IsActive { get; set; }
-
 	}
 }
