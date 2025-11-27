@@ -9,8 +9,10 @@ namespace ManagementSystem.Models
 {
 	public class Student
 	{
-		public int StudentiD { get; set; }
+		public int StudentId { get; set; }
 		public string Fullname { get; set; }
+		public int Age { get; set; }
+		public string Email { get; set; }
 		public string Faculty { get; set; }
 		public DateTime DateOfBirth { get; set; }
 		public DateTime EnrollmentDate { get; set; } = DateTime.Now;
