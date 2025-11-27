@@ -17,11 +17,89 @@ namespace ManagementSystem.Services
 			_postgresDataService = postgresDataService;
 		}
 
-		public void AddStudent() { }
-		public List<Student> GetAllStudents() { }
-		public Student GetStudentById(int id) { }
-		public List<Student> SearchStudents(string searchTerm) { }
-		public bool UpdateStudent(Student updatedStudent) { }
-		public bool DeleteStudent(int id) { }
+		public void AddStudent(Student student) 
+		{
+			try
+			{
+				_postgresDataService.SaveNewStudent(student);
+				Console.WriteLine($"Student added successfully with ID: {student.StudentId}");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error while adding new student: {ex.Message}");
+			}
+		}
+		public List<Student> GetAllStudents()
+		{
+			try
+			{
+				return _postgresDataService.LoadStudents();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error while retrieving all students: {ex.Message}");
+				return new List<Student>();
+			}
+		}
+		public Student GetStudentById(int id)
+		{
+			try
+			{
+				return _postgresDataService.GetStudentById(id);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error while retrieving student by id: {ex.Message}");
+				return null;
+			}
+		}
+		public List<Student> SearchStudents(string text) 
+		{
+			try
+			{
+				return _postgresDataService.SearchStudents(text);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error while searching students: {ex.Message}");
+				return new List<Student>();
+			}
+
+		}
+		public bool UpdateStudent(Student updatedStudent)
+		{
+			try
+			{
+				var existingStudent = GetStudentById(updatedStudent.StudentId);
+				if (existingStudent == null)
+					return false;
+
+				_postgresDataService.UpdateStudent(updatedStudent);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error while updating student: {ex.Message}");
+				return false;
+			}
+		}
+
+		public bool DeleteStudent(int id)
+		{
+			try
+			{
+				var student = GetStudentById(id);
+				if (student == null)
+					return false;
+
+				_postgresDataService.DeleteStudent(id);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error while deleting student: {ex.Message}");
+				return false;
+			}
+		}
 	}
 }
