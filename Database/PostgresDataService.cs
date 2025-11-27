@@ -38,16 +38,128 @@ namespace ManagementSystem.Database
 					Fullname = reader.GetString("fullname"),
 					Age = reader.GetInt32("age"),
 					Email = reader.GetString("email"),
-					Faculty = reader.GetString("faculty")
+					Faculty = reader.GetString("faculty"),
+					DateOfBirth = reader.GetDateTime("dateofbirth"),
+					EnrollmentDate = reader.GetDateTime("enrollmentdate")
 				};
 				students.Add(student);
 			}
 			return students;
 		}
-		public  void SaveStudent(Student student) { }
-		public  void UpdateStudent(Student student) { }
-		public  void DeleteStudent(int id) { }
-		public Student GetStudentById (int Id) { }
-		public List<Student> SearchStudents(string searchStudents) { }
+		public void SaveNewStudent(Student student) 
+		{
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = @"INSERT into students (fullname, age, email, faculty, dateofbirth, enrollmentdate)
+						VALUES (@fullname, @age, @email, @faculty, @dateofbirth, @enrollmentdate)
+						RETURNING ID";
+
+			using var command = new NpgsqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@fullname", student.Fullname);
+			command.Parameters.AddWithValue("@age", student.Age);
+			command.Parameters.AddWithValue("@email", student.Email);
+			command.Parameters.AddWithValue("@faculty", student.Faculty);
+			command.Parameters.AddWithValue("@dateofbirth", student.DateOfBirth);
+			command.Parameters.AddWithValue("@enrollmentdate", student.EnrollmentDate);
+
+			var newId = command.ExecuteScalar();
+			if (newId != null)
+			{
+				student.StudentId = Convert.ToInt32(newId);
+			}
+		}
+		public  void UpdateStudent(Student student) 
+		{
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = @"UPDATE students
+						SET fullname = @fullname, 
+							age = @age,
+							email = @email,
+							faculty = @faculty,
+							dateofbirth = @dateofbirth,
+							enrollmentdate = @enrollmentdate
+						WHERE studentid = @studentid";
+
+			using var command = new NpgsqlCommand( sql, connection);
+			command.Parameters.AddWithValue("@studentid", student.StudentId);
+			command.Parameters.AddWithValue("@fullname", student.Fullname);
+			command.Parameters.AddWithValue("@age", student.Age);
+			command.Parameters.AddWithValue("@email", student.Email);
+			command.Parameters.AddWithValue("@faculty", student.Faculty);
+			command.Parameters.AddWithValue("@dateofbirth", student.DateOfBirth);
+			command.Parameters.AddWithValue("@enrollmentdate", student.EnrollmentDate);
+
+			command.ExecuteNonQuery();
+		}
+		public  void DeleteStudent(int id) 
+		{
+			using var connection = new NpgsqlConnection( _connectionString);
+			connection.Open();
+
+			var sql = "DELETE FROM students WHERE id = @id";
+			using var command = new NpgsqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@id", id);
+			command.ExecuteNonQuery();
+		}
+		public Student GetStudentById (int Id) 
+		{
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = "SELECT studentid, fullname FROM students";
+			using var command = new NpgsqlCommand(sql, connection);
+			using var reader = command.ExecuteReader();
+
+			if (reader.Read())
+			{
+				return new Student
+				{
+					StudentId = reader.GetInt32("id"),
+					Fullname = reader.GetString("fullname"),
+					Age = reader.GetInt32("age"),
+					Email = reader.GetString("email"),
+					Faculty = reader.GetString("faculty"),
+					DateOfBirth = reader.GetDateTime("date_of_birth"),
+					EnrollmentDate = reader.GetDateTime("enrollment_date")
+				};
+			}
+
+			return null;
+		}
+		public List<Student> SearchStudents(string text)
+		{
+			var students = new List<Student>();
+
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = @"SELECT * FROM students
+						WHERE fullname ILIKE @text
+						ORDER BY studentid";
+
+			using var command = new NpgsqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@text", $"%{text}%");
+			using var reader = command.ExecuteReader();
+
+			while (reader.Read())
+			{
+				var student = new Student
+				{
+					StudentId = reader.GetInt32("id"),
+					Fullname = reader.GetString("fullname"),
+					Age = reader.GetInt32("age"),
+					Email = reader.GetString("email"),
+					Faculty = reader.GetString("faculty"),
+					DateOfBirth = reader.GetDateTime("date_of_birth"),
+					EnrollmentDate = reader.GetDateTime("enrollment_date")
+				};
+				students.Add(student);
+			}
+
+			return students;
+		}
 	}
 }
