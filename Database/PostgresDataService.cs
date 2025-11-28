@@ -53,7 +53,7 @@ namespace ManagementSystem.Database
 
 			var sql = @"INSERT into students (fullname, age, email, faculty, dateofbirth, enrollmentdate)
 						VALUES (@fullname, @age, @email, @faculty, @dateofbirth, @enrollmentdate)
-						RETURNING ID";
+						RETURNING studentid";
 
 			using var command = new NpgsqlCommand(sql, connection);
 			command.Parameters.AddWithValue("@fullname", student.Fullname);
@@ -99,17 +99,17 @@ namespace ManagementSystem.Database
 			using var connection = new NpgsqlConnection( _connectionString);
 			connection.Open();
 
-			var sql = "DELETE FROM students WHERE id = @id";
+			var sql = "DELETE FROM students WHERE studentid = @studentid";
 			using var command = new NpgsqlCommand(sql, connection);
-			command.Parameters.AddWithValue("@id", id);
+			command.Parameters.AddWithValue("@studentid", id);
 			command.ExecuteNonQuery();
 		}
-		public Student GetStudentById (int Id) 
+		public Student GetStudentById (int id) 
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
 			connection.Open();
 
-			var sql = "SELECT studentid, fullname FROM students";
+			var sql = "SELECT * FROM students";
 			using var command = new NpgsqlCommand(sql, connection);
 			using var reader = command.ExecuteReader();
 
@@ -117,13 +117,13 @@ namespace ManagementSystem.Database
 			{
 				return new Student
 				{
-					StudentId = reader.GetInt32("id"),
+					StudentId = reader.GetInt32("studentid"),
 					Fullname = reader.GetString("fullname"),
-					Age = reader.GetInt32("age"),
-					Email = reader.GetString("email"),
 					Faculty = reader.GetString("faculty"),
-					DateOfBirth = reader.GetDateTime("date_of_birth"),
-					EnrollmentDate = reader.GetDateTime("enrollment_date")
+					DateOfBirth = reader.GetDateTime("dateofbirth"),
+					EnrollmentDate = reader.GetDateTime("enrollmentdate"),
+					Email = reader.GetString("email"),
+					Age = reader.GetInt32("age")
 				};
 			}
 
@@ -148,13 +148,13 @@ namespace ManagementSystem.Database
 			{
 				var student = new Student
 				{
-					StudentId = reader.GetInt32("id"),
+					StudentId = reader.GetInt32("studentid"),
 					Fullname = reader.GetString("fullname"),
 					Age = reader.GetInt32("age"),
 					Email = reader.GetString("email"),
 					Faculty = reader.GetString("faculty"),
-					DateOfBirth = reader.GetDateTime("date_of_birth"),
-					EnrollmentDate = reader.GetDateTime("enrollment_date")
+					DateOfBirth = reader.GetDateTime("dateofbirth"),
+					EnrollmentDate = reader.GetDateTime("enrollmentdate")
 				};
 				students.Add(student);
 			}
