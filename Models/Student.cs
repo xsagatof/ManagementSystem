@@ -16,5 +16,11 @@ namespace ManagementSystem.Models
 		public string Faculty { get; set; }
 		public DateTime DateOfBirth { get; set; }
 		public DateTime EnrollmentDate { get; set; } = DateTime.Now;
+
+		public override string ToString()
+		{
+			return $"ID: {StudentId}, Name: {Fullname}, Age: {Age}, Email: {Email}, Faculty: {Faculty}, DOB: {DateOfBirth:yyyy-MM-dd}, Enrolled: {EnrollmentDate:yyyy-MM-dd}";
+		}
+
 	}
 }

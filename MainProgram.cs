@@ -72,7 +72,7 @@ namespace ManagementSystem
 
 			var student = new Student();
 
-			Console.Write("First Name: ");
+			Console.Write("Full Name: ");
 			student.Fullname = Console.ReadLine();
 
 			Console.Write("Age: ");
@@ -113,7 +113,7 @@ namespace ManagementSystem
 		static void SearchStudents()
 		{
 			Console.WriteLine("\n--- Search Students ---");
-			Console.Write("Enter search term: ");
+			Console.Write("Enter name to search: ");
 			var searchTerm = Console.ReadLine();
 
 			if (string.IsNullOrWhiteSpace(searchTerm))
@@ -163,7 +163,7 @@ namespace ManagementSystem
 				EnrollmentDate = existingStudent.EnrollmentDate
 			};
 
-			Console.Write($"First Name ({existingStudent.Fullname}): ");
+			Console.Write($"Full Name ({existingStudent.Fullname}): ");
 			updatedStudent.Fullname = GetInputOrDefault(Console.ReadLine(), existingStudent.Fullname);
 
 			Console.Write($"Age ({existingStudent.Age}): ");
@@ -177,6 +177,18 @@ namespace ManagementSystem
 
 			Console.Write($"Faculty ({existingStudent.Faculty}): ");
 			updatedStudent.Faculty = GetInputOrDefault(Console.ReadLine(), existingStudent.Faculty);
+
+			Console.Write($"Date of birth ({existingStudent.DateOfBirth}): ");
+			if(!DateTime.TryParse(Console.ReadLine(), out DateTime dob))
+				updatedStudent.DateOfBirth = dob;
+			else
+				updatedStudent.DateOfBirth = existingStudent.DateOfBirth;
+			
+			Console.Write($"Date of enrollment ({existingStudent.EnrollmentDate}): ");
+			if(!DateTime.TryParse(Console.ReadLine(), out DateTime ed))
+				updatedStudent.EnrollmentDate = ed;
+			else
+				updatedStudent.EnrollmentDate = existingStudent.EnrollmentDate;
 
 			if (_studentService.UpdateStudent(updatedStudent))
 			{
