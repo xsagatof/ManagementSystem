@@ -29,6 +29,36 @@ namespace ManagementSystem
 			while (true)
 			{
 				Console.WriteLine("\n--- Main Menu ---");
+				Console.WriteLine("1. Manage students");
+				Console.WriteLine("2. Manage courses");
+				Console.WriteLine("3. Exit");
+				Console.WriteLine("Select an option: ");
+
+				var choice = Console.ReadLine();
+
+				switch (choice)
+				{
+					case "1":
+						ShowStudentsMenu();
+						break;
+					case "2":
+						ShowCoursesMenu();
+						break;
+					case "3":
+						Console.WriteLine("Goodbye!");
+						return;
+					default:
+						Console.WriteLine("Invalid option. Please try again.");
+						break;
+				}
+			}
+		}
+
+		static void ShowStudentsMenu()
+		{
+			while (true)
+			{
+				Console.WriteLine("\n--- Student's Menu ---");
 				Console.WriteLine("1. Add Student");
 				Console.WriteLine("2. View All Students");
 				Console.WriteLine("3. Search Students");
@@ -55,6 +85,48 @@ namespace ManagementSystem
 						break;
 					case "5":
 						DeleteStudent();
+						break;
+					case "6":
+						Console.WriteLine("Goodbye!");
+						return;
+					default:
+						Console.WriteLine("Invalid option. Please try again.");
+						break;
+				}
+			}
+		}
+
+		static void ShowCoursesMenu()
+		{
+			while (true)
+			{
+				Console.WriteLine("\n--- Course's Menu ---");
+				Console.WriteLine("1. Add Course");
+				Console.WriteLine("2. View All Courses");
+				Console.WriteLine("3. Search Course");
+				Console.WriteLine("4. Update Course");
+				Console.WriteLine("5. Delete Course");
+				Console.WriteLine("6. Exit");
+				Console.Write("Select an option: ");
+
+				var choice = Console.ReadLine();
+
+				switch (choice)
+				{
+					case "1":
+						//AddCourse();
+						break;
+					case "2":
+						//ViewAllCourses();
+						break;
+					case "3":
+						//SearchCourses();
+						break;
+					case "4":
+						//UpdateCourses();
+						break;
+					case "5":
+						//DeleteCourse();
 						break;
 					case "6":
 						Console.WriteLine("Goodbye!");
