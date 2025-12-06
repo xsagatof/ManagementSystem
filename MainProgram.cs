@@ -13,12 +13,14 @@ namespace ManagementSystem
 	public class MainProgram
 	{
 		private static StudentService _studentService;
+		private static CourseService _courseService;
 		static void Main(string[] args)
 		{
 			var connectionString = "Host=localhost; Port=5432; Database=student_management; Username=postgres; Password=12345";
 
 			var dataService = new PostgresDataService(connectionString);
 			_studentService = new StudentService(dataService);
+			_courseService = new CourseService(dataService);
 
 			Console.WriteLine("###   Student Management System   ###");
 			ShowMainMenu();
@@ -114,19 +116,19 @@ namespace ManagementSystem
 				switch (choice)
 				{
 					case "1":
-						//AddCourse();
+						AddCourse();
 						break;
 					case "2":
-						//ViewAllCourses();
+						ViewAllCourses();
 						break;
 					case "3":
-						//SearchCourses();
+						SearchCourses();
 						break;
 					case "4":
 						//UpdateCourses();
 						break;
 					case "5":
-						//DeleteCourse();
+						DeleteCourse();
 						break;
 					case "6":
 						Console.WriteLine("Goodbye!");
@@ -135,6 +137,108 @@ namespace ManagementSystem
 						Console.WriteLine("Invalid option. Please try again.");
 						break;
 				}
+			}
+		}
+
+		static void AddCourse()
+		{
+			Console.WriteLine("\n--- Add New Course ---");
+
+			var course = new Course();
+
+			Console.WriteLine("ID of the course: ");
+			course.CourseID = Convert.ToInt16(Console.ReadLine());
+
+
+			Console.WriteLine("Name of the course: ");
+			course.Name = Console.ReadLine();
+
+			Console.WriteLine("Credits for the course: ");
+			course.Credits = Convert.ToDouble(Console.ReadLine());
+
+			_courseService.AddCourse(course);
+		}
+
+		static void ViewAllCourses()
+		{
+			Console.WriteLine("\n--- All Courses ---");
+			var courses = _courseService.GetAllCourses();
+
+			if (!courses.Any())
+			{
+				Console.WriteLine("No courses found.");
+				return;
+			}
+
+			foreach (var course in courses)
+			{
+				Console.WriteLine(course);
+			}
+		}
+
+		static void SearchCourses()
+		{
+			Console.WriteLine("\n--- Search Courses ---");
+			Console.Write("Enter course name to search: ");
+			var searchTerm = Console.ReadLine();
+
+			if (string.IsNullOrWhiteSpace(searchTerm))
+			{
+				Console.WriteLine("Search term cannot be empty.");
+				return;
+			}
+
+			var courses = _courseService.SearchCourse(searchTerm);
+
+			if (!courses.Any())
+			{
+				Console.WriteLine("No courses found matching your search.");
+				return;
+			}
+
+			Console.WriteLine($"Found {courses.Count} course(s):");
+			foreach (var course in courses)
+			{
+				Console.WriteLine(course);
+			}
+		}
+
+		static void DeleteCourse()
+		{
+			Console.WriteLine("\n--- Delete Course ---");
+			Console.Write("Enter Course ID to delete: ");
+
+			if (!int.TryParse(Console.ReadLine(), out int id))
+			{
+				Console.WriteLine("Invalid ID format.");
+				return;
+			}
+
+			var course = _courseService.GetCourseById(id);
+			if (course == null)
+			{
+				Console.WriteLine($"Course with ID {id} not found.");
+				return;
+			}
+
+			Console.WriteLine($"You are about to delete: {course}");
+			Console.Write("Are you sure? (Y/N): ");
+			var confirmation = Console.ReadLine();
+
+			if (confirmation?.ToUpper() == "Y")
+			{
+				if (_courseService.DeleteStudent(id))
+				{
+					Console.WriteLine("Course deleted successfully.");
+				}
+				else
+				{
+					Console.WriteLine("Failed to delete course.");
+				}
+			}
+			else
+			{
+				Console.WriteLine("Deletion cancelled.");
 			}
 		}
 
