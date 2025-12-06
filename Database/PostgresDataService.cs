@@ -2,6 +2,7 @@
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -160,6 +161,112 @@ namespace ManagementSystem.Database
 			}
 
 			return students;
+		}
+
+		public List<Course> LoadCourses()
+		{
+			var courses = new List<Course>();
+
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = "SELECT * FROM courses";
+			using var command = new NpgsqlCommand(sql, connection);
+			using var reader = command.ExecuteReader();
+
+			while (reader.Read())
+			{
+				var course = new Course()
+				{
+					CourseID = reader.GetInt16("courseid"),
+					Name = reader.GetString("name"),
+					Credits = reader.GetDouble("credits")
+				};
+				courses.Add(course);
+			}
+			return courses;
+		}
+
+		public void SaveNewCourse(Course course)
+		{
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = @"INSERT into courses (courseid, name, credits)
+						VALUES (@courseid, @name, @credits)
+							RETURNING courseid";
+
+			using var command = new NpgsqlCommand( sql, connection);
+			command.Parameters.AddWithValue("@courseid", course.CourseID);
+			command.Parameters.AddWithValue("@name", course.Name);
+			command.Parameters.AddWithValue("@credits", course.Credits);
+
+			var newId = command.ExecuteScalar();
+			if (newId != null)
+			{
+				course.CourseID = Convert.ToInt32(newId);
+			}
+		}
+
+		public Course GetCourseById(int id)
+		{
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = "SELECT * FROM courses";
+			using var command = new NpgsqlCommand(sql, connection);
+			using var reader = command.ExecuteReader();
+
+			if (reader.Read())
+			{
+				return new Course
+				{
+					CourseID = reader.GetInt32("courseid"),
+					Name = reader.GetString("name"),
+					Credits = reader.GetDouble("credits")
+				};
+			}
+
+			return null;
+		}
+		public void DeleteCourse(int id)
+		{
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = @"DELETE FROM courses WHERE courseid = @courseid";
+			using var command = new NpgsqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@courseid", id);
+			command.ExecuteNonQuery();
+		}
+
+		public List<Course> SearchCourses(string text)
+		{
+			var courses = new List<Course>();
+
+			var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = @"SELECT * FROM courses
+						WHERE name ILIKE @text
+						ORDER BY courseid";
+
+			using var command = new NpgsqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@text", $"%{text}%");
+			using var reader = command.ExecuteReader();
+
+			while(reader.Read())
+			{
+				var course = new Course()
+				{
+					CourseID = reader.GetInt16("courseid"),
+					Name = reader.GetString("name"),
+					Credits = reader.GetDouble("credits")
+				};
+				courses.Add(course);
+			}
+
+			return courses;
 		}
 	}
 }
