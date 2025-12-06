@@ -11,5 +11,10 @@ namespace ManagementSystem.Models
 		public int CourseID { get; set; }
 		public string Name { get; set; }
 		public double Credits { get; set; }
+
+		public override string ToString()
+		{
+			return $"ID: {CourseID}, Name: {Name}, Credits: {Credits}";
+		}
 	}
 }
