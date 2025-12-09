@@ -268,5 +268,34 @@ namespace ManagementSystem.Database
 
 			return courses;
 		}
+
+		public void AddEnrollment(Enrollment enrollment)
+		{
+
+		}
+
+		public List <Enrollment> GetEnrollments()
+		{
+			var enrollments = new List<Enrollment>();
+
+			return enrollments;
+		}
+
+		public bool UpdateEnrollmentGrade(int enrollmentId, string Grade)
+		{
+			return false;
+		}
+
+		public bool DeleteEnrollment(int enrollmentId)
+		{
+			return false;
+		}
+
+		public List<Enrollment> GetStudentEnrollments(int studentId)
+		{
+			return new List<Enrollment>();
+		}
+		
+
 	}
 }
