@@ -20,7 +20,7 @@ namespace ManagementSystem.Models
 		{
 			if (Student != null && Course != null)
 			{
-				//return $"Enrollment ID: {EnrollmentId} | Student: {Student.Fullname} | Course: {Course.CourseCode} - {Course.CourseName} | Grade: {Grade ?? "Not graded"}";
+				return $"Enrollment ID: {EnrollmentId} | Student: {Student.Fullname} | Course: {Course.CourseCode} - {Course.Name} | Grade: {Grade ?? "Not graded"}";
 			}
 			return $"Enrollment ID: {EnrollmentId} | Student ID: {StudentId} | Course ID: {CourseId} | Grade: {Grade ?? "Not graded"}";
 		}

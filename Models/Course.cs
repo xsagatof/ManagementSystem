@@ -9,13 +9,13 @@ namespace ManagementSystem.Models
 	public class Course
 	{
 		public int CourseID { get; set; }
-		// public string CourseCode
+		public string CourseCode { get; set; }
 		public string Name { get; set; }
 		public double Credits { get; set; }
 
-		/*public override string ToString()
+		public override string ToString()
 		{
-			return $"ID: {CourseId} | {CourseCode}: {CourseName} | Credits: {Credits}";
-		}*/
+			return $"ID: {CourseID} | {CourseCode}: {Name} | Credits: {Credits}";
+		}
 	}
 }
