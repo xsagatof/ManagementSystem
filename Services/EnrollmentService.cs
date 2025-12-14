@@ -84,6 +84,62 @@ namespace ManagementSystem.Services
 				    Console.WriteLine(enrollment);
 			}
 		}
-	
+
+		public void ListStudentEnrollments(int studentId)
+		{
+			var student = _studentService.GetStudentById(studentId);
+			if (student == null)
+			{
+				Console.WriteLine($"Student with ID {studentId} not found.");
+				return;
+			}
+
+			var enrollments = _dataService.GetStudentEnrollments(studentId);
+
+			if (!enrollments.Any())
+			{
+				Console.WriteLine($"No enrollments found for student {studentId}.");
+				return;
+			}
+
+			Console.WriteLine($"\n--- Enrollments for {student.Fullname} ---");
+
+			foreach (var enrollment in enrollments)
+			{
+				var course = _courseService.GetCourseById(enrollment.CourseId);
+				if (course != null)
+				{
+					Console.WriteLine($"Course: {course.CourseCode} - {course.Name} | Grade: {enrollment.Grade ?? "Not graded"}");
+				}
+				else
+				{
+					Console.WriteLine($"Course ID: {enrollment.CourseId} | Grade: {enrollment.Grade ?? "Not graded"}");
+				}
+			}
+		}
+
+		public void UpdateGrade(int enrollmentId, string grade)
+		{
+			if (_dataService.UpdateEnrollmentGrade(enrollmentId, grade))
+			{
+				Console.WriteLine($"Grade updated to '{grade}' for enrollment {enrollmentId}");
+			}
+			else
+			{
+				Console.WriteLine($"Enrollment with ID {enrollmentId} not found.");
+			}
+		}
+
+		public void RemoveEnrollment(int enrollmentId)
+		{
+			if (_dataService.DeleteEnrollment(enrollmentId))
+			{
+				Console.WriteLine($"Enrollment {enrollmentId} removed.");
+			}
+			else
+			{
+				Console.WriteLine($"Enrollment with ID {enrollmentId} not found.");
+			}
+		}
 	}
 }
