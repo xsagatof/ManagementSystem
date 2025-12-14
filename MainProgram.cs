@@ -14,6 +14,7 @@ namespace ManagementSystem
 	{
 		private static StudentService _studentService;
 		private static CourseService _courseService;
+		private static EnrollmentService _enrollmentService;
 		static void Main(string[] args)
 		{
 			var connectionString = "Host=localhost; Port=5432; Database=student_management; Username=postgres; Password=12345";
@@ -21,6 +22,7 @@ namespace ManagementSystem
 			var dataService = new PostgresDataService(connectionString);
 			_studentService = new StudentService(dataService);
 			_courseService = new CourseService(dataService);
+			_enrollmentService = new EnrollmentService(dataService, _studentService, _courseService);
 
 			Console.WriteLine("###   Student Management System   ###");
 			ShowMainMenu();
@@ -33,7 +35,8 @@ namespace ManagementSystem
 				Console.WriteLine("\n--- Main Menu ---");
 				Console.WriteLine("1. Manage students");
 				Console.WriteLine("2. Manage courses");
-				Console.WriteLine("3. Exit");
+				Console.WriteLine("3. Manage enrollments");
+				Console.WriteLine("4. Exit");
 				Console.WriteLine("Select an option: ");
 
 				var choice = Console.ReadLine();
@@ -47,6 +50,9 @@ namespace ManagementSystem
 						ShowCoursesMenu();
 						break;
 					case "3":
+						ShowEnrollmentMenu();
+						break;
+					case "4":
 						Console.WriteLine("Goodbye!");
 						return;
 					default:
@@ -140,6 +146,46 @@ namespace ManagementSystem
 			}
 		}
 
+		static void ShowEnrollmentMenu()
+		{
+			while (true)
+			{
+				Console.WriteLine("\n--- Enrollment Management ---");
+				Console.WriteLine("1. Enroll Student in Course");
+				Console.WriteLine("2. View All Enrollments");
+				Console.WriteLine("3. View Student Enrollments");
+				Console.WriteLine("4. Update Grade");
+				Console.WriteLine("5. Remove Enrollment");
+				Console.WriteLine("6. Back to Main Menu");
+				Console.Write("Select an option: ");
+
+				var choice = Console.ReadLine();
+
+				switch (choice)
+				{
+					case "1":
+						//EnrollStudent();
+						break;
+					case "2":
+						//_enrollmentService.ListAllEnrollments();
+						break;
+					case "3":
+						//ViewStudentEnrollments();
+						break;
+					case "4":
+						//UpdateEnrollmentGrade();
+						break;
+					case "5":
+						//RemoveEnrollment();
+						break;
+					case "6":
+						return;
+					default:
+						Console.WriteLine("Invalid option. Please try again.");
+						break;
+				}
+			}
+		}
 		static void AddCourse()
 		{
 			Console.WriteLine("\n--- Add New Course ---");
