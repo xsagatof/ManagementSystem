@@ -164,19 +164,19 @@ namespace ManagementSystem
 				switch (choice)
 				{
 					case "1":
-						//EnrollStudent();
+						EnrollStudent();
 						break;
 					case "2":
-						//_enrollmentService.ListAllEnrollments();
+						_enrollmentService.ListAllEnrollments();
 						break;
 					case "3":
-						//ViewStudentEnrollments();
+						ViewStudentEnrollments();
 						break;
 					case "4":
-						//UpdateEnrollmentGrade();
+						UpdateEnrollmentGrade();
 						break;
 					case "5":
-						//RemoveEnrollment();
+						RemoveEnrollment();
 						break;
 					case "6":
 						return;
@@ -186,6 +186,76 @@ namespace ManagementSystem
 				}
 			}
 		}
+
+
+		static void EnrollStudent()
+		{
+			Console.Write("Enter Student ID: ");
+			if (!int.TryParse(Console.ReadLine(), out int studentId))
+			{
+				Console.WriteLine("Invalid Student ID.");
+				return;
+			}
+
+			Console.Write("Enter Course ID: ");
+			if (!int.TryParse(Console.ReadLine(), out int courseId))
+			{
+				Console.WriteLine("Invalid Course ID.");
+				return;
+			}
+
+			_enrollmentService.EnrollStudent(studentId, courseId);
+		}
+
+		static void ViewStudentEnrollments()
+		{
+			Console.Write("Enter Student ID: ");
+			if (!int.TryParse(Console.ReadLine(), out int studentId))
+			{
+				Console.WriteLine("Invalid Student ID.");
+				return;
+			}
+
+			_enrollmentService.ListStudentEnrollments(studentId);
+		}
+
+		static void UpdateEnrollmentGrade()
+		{
+			Console.Write("Enter Enrollment ID: ");
+			if (!int.TryParse(Console.ReadLine(), out int enrollmentId))
+			{
+				Console.WriteLine("Invalid Enrollment ID.");
+				return;
+			}
+
+			Console.Write("Enter Grade: ");
+			var grade = Console.ReadLine();
+
+			_enrollmentService.UpdateGrade(enrollmentId, grade);
+		}
+
+		static void RemoveEnrollment()
+		{
+			Console.Write("Enter Enrollment ID: ");
+			if (!int.TryParse(Console.ReadLine(), out int enrollmentId))
+			{
+				Console.WriteLine("Invalid Enrollment ID.");
+				return;
+			}
+
+			Console.Write("Are you sure? (Y/N): ");
+			var confirmation = Console.ReadLine();
+
+			if (confirmation?.ToUpper() == "Y")
+			{
+				_enrollmentService.RemoveEnrollment(enrollmentId);
+			}
+			else
+			{
+				Console.WriteLine("Cancelled.");
+			}
+		}
+
 		static void AddCourse()
 		{
 			Console.WriteLine("\n--- Add New Course ---");
