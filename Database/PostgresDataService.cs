@@ -20,6 +20,7 @@ namespace ManagementSystem.Database
 			_connectionString = connectionString;
 		}
 
+		//Student database methods
 		public  List<Student> LoadStudents() 
 		{
 			var students = new List<Student>();
@@ -163,6 +164,7 @@ namespace ManagementSystem.Database
 			return students;
 		}
 
+		//Course database methods
 		public List<Course> LoadCourses()
 		{
 			var courses = new List<Course>();
@@ -186,7 +188,6 @@ namespace ManagementSystem.Database
 			}
 			return courses;
 		}
-
 		public void SaveNewCourse(Course course)
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
@@ -207,7 +208,6 @@ namespace ManagementSystem.Database
 				course.CourseID = Convert.ToInt32(newId);
 			}
 		}
-
 		public Course GetCourseById(int id)
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
@@ -239,7 +239,6 @@ namespace ManagementSystem.Database
 			command.Parameters.AddWithValue("@courseid", id);
 			command.ExecuteNonQuery();
 		}
-
 		public List<Course> SearchCourses(string text)
 		{
 			var courses = new List<Course>();
@@ -269,33 +268,145 @@ namespace ManagementSystem.Database
 			return courses;
 		}
 
+
+		//Enrollment database methods
 		public void AddEnrollment(Enrollment enrollment)
 		{
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
 
+			var sql = @"
+						INSERT INTO enrollments (studentid, courseid, grade)
+						VALUES (@studentId, @courseId, @grade)
+						RETURNING enrollmentid";
+
+			using var command = new NpgsqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@studentid", enrollment.StudentId);
+			command.Parameters.AddWithValue("@courseid", enrollment.CourseId);
+			command.Parameters.AddWithValue("@grade", string.IsNullOrEmpty(enrollment.Grade) ? (object)DBNull.Value : enrollment.Grade);
+
+			var newId = command.ExecuteScalar();
+			if (newId != null)
+			{
+				enrollment.EnrollmentId = Convert.ToInt32(newId);
+			}
 		}
 
-		public List <Enrollment> GetEnrollments()
+		public List<Enrollment> GetEnrollments()
 		{
 			var enrollments = new List<Enrollment>();
+
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = "SELECT * FROM enrollments ORDER BY enrollmentid";
+			using var command = new NpgsqlCommand(sql, connection);
+			using var reader = command.ExecuteReader();
+
+			while (reader.Read())
+			{
+				var enrollment = new Enrollment
+				{
+					EnrollmentId = reader.GetInt32("enrollmentid"),
+					StudentId = reader.GetInt32("studentid"),
+					CourseId = reader.GetInt32("courseid"),
+					Grade = reader.IsDBNull("grade") ? null : reader.GetString("grade")
+				};
+				enrollments.Add(enrollment);
+			}
 
 			return enrollments;
 		}
 
-		public bool UpdateEnrollmentGrade(int enrollmentId, string Grade)
+		public bool UpdateEnrollmentGrade(int enrollmentId, string grade)
 		{
-			return false;
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = "UPDATE enrollments SET grade = @grade WHERE enrollmentid = @id";
+			using var command = new NpgsqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@id", enrollmentId);
+			command.Parameters.AddWithValue("@grade", grade);
+
+			return command.ExecuteNonQuery() > 0;
 		}
 
 		public bool DeleteEnrollment(int enrollmentId)
 		{
-			return false;
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = "DELETE FROM enrollments WHERE enrollmentid = @id";
+			using var command = new NpgsqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@id", enrollmentId);
+
+			return command.ExecuteNonQuery() > 0;
 		}
 
 		public List<Enrollment> GetStudentEnrollments(int studentId)
 		{
-			return new List<Enrollment>();
+			var enrollments = new List<Enrollment>();
+
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = "SELECT * FROM enrollments WHERE studentid = @studentid ORDER BY studentid";
+			using var command = new NpgsqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@studentid", studentId);
+			using var reader = command.ExecuteReader();
+
+			while (reader.Read())
+			{
+				var enrollment = new Enrollment
+				{
+					EnrollmentId = reader.GetInt32("enrollmentid"),
+					StudentId = reader.GetInt32("studentid"),
+					CourseId = reader.GetInt32("courseid"),
+					Grade = reader.IsDBNull("grade") ? null : reader.GetString("grade")
+				};
+				enrollments.Add(enrollment);
+			}
+
+			return enrollments;
 		}
-		
+
+		public Enrollment? GetEnrollmentById(int enrollmentId)
+		{
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = "SELECT * FROM enrollments WHERE enrollmentid = @id";
+			using var command = new NpgsqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@id", enrollmentId);
+			using var reader = command.ExecuteReader();
+
+			if (reader.Read())
+			{
+				return new Enrollment
+				{
+					EnrollmentId = reader.GetInt32("enrollmentid"),
+					StudentId = reader.GetInt32("studentid"),
+					CourseId = reader.GetInt32("courseid"),
+					Grade = reader.IsDBNull("grade") ? null : reader.GetString("grade")
+				};
+			}
+
+			return null;
+		}
+
+		public bool IsStudentEnrolledInCourse(int studentId, int courseId)
+		{
+			using var connection = new NpgsqlConnection(_connectionString);
+			connection.Open();
+
+			var sql = "SELECT COUNT(*) FROM enrollments WHERE studentid = @studentid AND courseid = @courseid";
+			using var command = new NpgsqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@studentid", studentId);
+			command.Parameters.AddWithValue("@courseid", courseId);
+
+			var count = Convert.ToInt32(command.ExecuteScalar());
+			return count > 0;
+		}
 
 	}
 }

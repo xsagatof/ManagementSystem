@@ -53,7 +53,7 @@ namespace ManagementSystem.Services
 			};
 
 			_dataService.AddEnrollment(enrollment);
-			//Console.WriteLine($"Student {student.Fullname} enrolled in {course.CourseCode}: {course.CourseName}. Enrollment ID: {enrollment.EnrollmentId}");
+			Console.WriteLine($"Student {student.Fullname} enrolled in {course.CourseCode}: {course.Name}. Enrollment ID: {enrollment.EnrollmentId}");
 		}
 
 		public void ListAllEnrollments()
