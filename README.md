@@ -1,1 +1,2 @@
-Student and Courses management system with the use of ADO.NET framework.
+#ManagementSystem
+Students management system with the use of ADO.NET framework.
